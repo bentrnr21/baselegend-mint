@@ -8,57 +8,31 @@
   <style>
     body {
       font-family: sans-serif;
-      background: url('https://www.transparenttextures.com/patterns/cloudy-day.png');
-      animation: scrollBackground 60s linear infinite;
-      color: #fff;
+      background-color: #f0f4ff;
       text-align: center;
-      margin: 0;
-      padding: 0;
+      padding: 40px;
     }
-
-    @keyframes scrollBackground {
-      0% { background-position: 0 0; }
-      100% { background-position: 1000px 0; }
-    }
-
-    header {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 30px 0;
-    }
-
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      color: #00a8ff;
+      color: #0052FF;
     }
-
-    p.subtitle {
-      color: #eee;
-      font-size: 1rem;
-    }
-
     .card-container {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 40px;
-      padding: 40px 20px;
+      margin-top: 40px;
     }
-
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      color: #000;
+      background: white;
       padding: 20px;
-      border-radius: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       width: 250px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
-
     .card img {
       width: 100%;
       border-radius: 12px;
     }
-
     button {
       margin-top: 15px;
       padding: 10px 16px;
@@ -69,90 +43,54 @@
       font-weight: bold;
       cursor: pointer;
     }
-
-    #wallet-info {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 0.9rem;
-      background: rgba(0,0,0,0.5);
-      padding: 10px;
-      border-radius: 10px;
-    }
-
-    audio {
-      position: absolute;
-      bottom: 10px;
-      right: 20px;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🎮 Mint your BaseLegend NFT Cards</h1>
-    <p class="subtitle">Connect your wallet and mint one of the legendary on-chain cards below (0.0005 ETH each).</p>
-  </header>
-
-  <div id="wallet-info">Not connected</div>
-
+  <h1>🎮 Mint your BaseLegend NFT Cards</h1>
+  <p>Connect your wallet and mint one of the legendary on-chain cards below (0.0005 ETH each).</p>
   <div class="card-container">
     <div class="card">
-      <img src="images/pyron.png.png" alt="Pyron"/>
+      <img src="images/pyron.png" alt="Pyron"/>
       <button onclick="mintCard(1)">Mint Pyron</button>
     </div>
     <div class="card">
-      <img src="images/lightning-strike.png.png" alt="Lightning Strike"/>
+      <img src="images/lightning-strike.png" alt="Lightning Strike"/>
       <button onclick="mintCard(2)">Mint Lightning Strike</button>
     </div>
     <div class="card">
-      <img src="images/ancient-sword.png.png" alt="Ancient Sword"/>
+      <img src="images/ancient-sword.png" alt="Ancient Sword"/>
       <button onclick="mintCard(3)">Mint Ancient Sword</button>
     </div>
   </div>
 
-  <audio autoplay loop controls>
-    <source src="https://cdn.pixabay.com/download/audio/2023/04/06/audio_ee38fe6d8c.mp3?filename=epic-intro-141001.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-
   <script>
     const contractAddress = "0x440ae3c873dDa6120419dFa2F6Af6c097cbf1F4f";
-    const abi = ["function mintNFT(uint256 _tokenId) public payable"];
+    const abi = [
+      "function mintNFT(uint256 tokenId) public payable returns (uint256)"
+    ];
 
-    let provider, signer, contract;
-
-    async function connectWallet() {
-      if (typeof window.ethereum === 'undefined') {
+    async function mintCard(tokenId) {
+      if (typeof window.ethereum === "undefined") {
         alert("Please install MetaMask!");
         return;
       }
 
       await ethereum.request({ method: 'eth_requestAccounts' });
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      contract = new ethers.Contract(contractAddress, abi, signer);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
 
-      const address = await signer.getAddress();
-      const balance = await provider.getBalance(address);
-      const ethBalance = ethers.utils.formatEther(balance);
-      document.getElementById("wallet-info").innerText = `👤 ${address.substring(0,6)}...${address.slice(-4)} | 💰 ${parseFloat(ethBalance).toFixed(4)} ETH`;
-    }
-
-    async function mintCard(tokenId) {
-      if (!signer || !contract) {
-        await connectWallet();
-      }
       try {
-        const tx = await contract.mintNFT(tokenId, { value: ethers.utils.parseEther("0.0005") });
+        const tx = await contract.mintNFT(tokenId, {
+          value: ethers.utils.parseEther("0.0005")
+        });
         await tx.wait();
-        alert("✅ Mint successful!!");
-      } catch (err) {
-        console.error(err);
-        alert("❌ Mint failed. Check console.");
+        alert("Mint successful!");
+      } catch (error) {
+        console.error(error);
+        alert("Mint failed: " + (error?.message || "unknown error"));
       }
     }
-
-    window.onload = connectWallet;
   </script>
 </body>
 </html>
