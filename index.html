@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,10 +83,10 @@
       try {
         const tx = await contract.mintNFT(tokenId);
         await tx.wait();
-        alert("Mint successful!");
+        alert("✅ Mint successful!");
       } catch (error) {
         console.error(error);
-        alert("Mint failed.");
+        alert("❌ Mint failed. Check console.");
       }
     }
   </script>
