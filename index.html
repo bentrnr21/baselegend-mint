@@ -8,12 +8,12 @@
   <style>
     body {
       font-family: sans-serif;
-      background-color: #f5f5f5;
+      background-color: #f0f4ff;
       text-align: center;
       padding: 40px;
     }
     h1 {
-      color: #111;
+      color: #0052FF;
     }
     .card-container {
       display: flex;
@@ -47,7 +47,7 @@
 </head>
 <body>
   <h1>🎮 Mint your BaseLegend NFT Cards</h1>
-  <p>Connect your wallet and mint one of the exclusive on-chain cards below.</p>
+  <p>Connect your wallet and mint one of the legendary on-chain cards below (0.0005 ETH each).</p>
   <div class="card-container">
     <div class="card">
       <img src="images/pyron.png" alt="Pyron"/>
@@ -64,9 +64,9 @@
   </div>
 
   <script>
-    const contractAddress = "0x2043C3749079a4CE857F3fe228e0BaE43f0DAA55";
+    const contractAddress = "0x440ae3c873dDa6120419dFa2F6Af6c097cbf1F4f";
     const abi = [
-      "function mintNFT(uint256 _tokenId) public",
+      "function mintNFT(uint256 tokenId) public payable returns (uint256)"
     ];
 
     async function mintCard(tokenId) {
@@ -81,12 +81,14 @@
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
       try {
-        const tx = await contract.mintNFT(tokenId);
+        const tx = await contract.mintNFT(tokenId, {
+          value: ethers.utils.parseEther("0.0005")
+        });
         await tx.wait();
-        alert("✅ Mint successful!");
+        alert("Mint successful!");
       } catch (error) {
         console.error(error);
-        alert("❌ Mint failed. Check console.");
+        alert("Mint failed: " + (error?.message || "unknown error"));
       }
     }
   </script>
