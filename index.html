@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BaseLegend Mint</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #111;
+    }
+    .card-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-top: 40px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 250px;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 12px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      background: #0052FF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Mint your BaseLegend NFT Cards</h1>
+  <p>Connect your wallet and mint one of the exclusive on-chain cards below.</p>
+  <div class="card-container">
+    <div class="card">
+      <img src="images/pyron.png" alt="Pyron"/>
+      <button onclick="mintCard(1)">Mint Pyron</button>
+    </div>
+    <div class="card">
+      <img src="images/lightning-strike.png" alt="Lightning Strike"/>
+      <button onclick="mintCard(2)">Mint Lightning Strike</button>
+    </div>
+    <div class="card">
+      <img src="images/ancient-sword.png" alt="Ancient Sword"/>
+      <button onclick="mintCard(3)">Mint Ancient Sword</button>
+    </div>
+  </div>
+
+  <script>
+    const contractAddress = "0x2043C3749079a4CE857F3fe228e0BaE43f0DAA55";
+    const abi = [
+      "function mintNFT(uint256 _tokenId) public",
+    ];
+
+    async function mintCard(tokenId) {
+      if (typeof window.ethereum === "undefined") {
+        alert("Please install MetaMask!");
+        return;
+      }
+
+      await ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      try {
+        const tx = await contract.mintNFT(tokenId);
+        await tx.wait();
+        alert("Mint successful!");
+      } catch (error) {
+        console.error(error);
+        alert("Mint failed.");
+      }
+    }
+  </script>
+</body>
+</html>
