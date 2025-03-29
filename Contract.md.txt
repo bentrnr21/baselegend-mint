@@ -1,0 +1,11 @@
+# 📄 Smart Contracts - BaseLegendDAO
+
+Here are the deployed contract addresses for the DAO:
+
+- **Token Contract:** `0xaC2F9d8064DD0dDDA4199945A2e7fb9650B05135`
+- **Auction Contract:** `0x36E5a954253DDAa913d3054c023DA6B6C2A55397`
+- **Treasury Contract:** `0xBddF7b5dEd7D70d0735ca9AAE26CB459aa0EB949`
+- **Governor Contract:** `0xb8fFB2f756474d0311A818A0cde76d97E4B43521`
+- **Metadata Renderer:** `0xb0DD22317142d2878123C42316b8a184367895b7`
+
+All contracts are deployed on **Base Mainnet**.
